@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const ReviewPage = () => {
-  const stockData = [
+  const data = [
     {
       item: 'Macbook Air M1',
       productId: '#XGY-356',

@@ -4,83 +4,31 @@ import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const didLogout = () => {
-    navigate("/");
-  }
+
   return (
     <SidebarContainer>
       <LogoContainer>
-        <Logo>ADMIN </Logo>
+        <Logo>ADMIN</Logo>
       </LogoContainer>
       <NavSection>
-        {/* <NavItem>
-          <NavLink>
-            <Icon>🏠</Icon> Dashboard <NewBadge>NEW</NewBadge>
-          </NavLink>
-        </NavItem> */}
-        {/* <SectionTitle>THEME</SectionTitle>
-        <NavItem>
-          <NavLink>
-            <Icon>🎨</Icon> Colors
-          </NavLink>
-        </NavItem> */}
-        <NavItem>
+        <NavItem onClick={() => navigate('/reviews')}>
           <NavLink>
             <Icon>✏️</Icon> Đánh giá
           </NavLink>
         </NavItem>
-        {/* <SectionTitle>COMPONENTS</SectionTitle>
-        <NavItem>
-          <NavLink>
-            <Icon>🛠️</Icon> Base
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink>
-            <Icon>🚀</Icon> Buttons
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink>
-            <Icon>📊</Icon> Charts
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink>
-            <Icon>📝</Icon> Forms
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink>
-            <Icon>⭐</Icon> Icons
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink>
-            <Icon>🔔</Icon> Notifications
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink>
-            <Icon>📦</Icon> Widgets <NewBadge>NEW</NewBadge>
-          </NavLink>
-        </NavItem> */}
         <SectionTitle>EXTRAS</SectionTitle>
-        <NavItem onClick={didLogout}>
+        <NavItem onClick={() => navigate('/login')}>
           <NavLink>
             <Icon>📄</Icon> Đăng xuất
           </NavLink>
         </NavItem>
-       
       </NavSection>
-      <Footer>
-        <FooterLink href="#"></FooterLink>
-      </Footer>
     </SidebarContainer>
   );
 };
 
 // Styled Components
+
 const SidebarContainer = styled.div`
   width: 250px;
   height: 100vh;
@@ -135,31 +83,6 @@ const NavLink = styled.div`
 const Icon = styled.span`
   margin-right: 10px;
   font-size: 18px;
-`;
-
-const NewBadge = styled.span`
-  background-color: #00bfff;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 6px;
-  margin-left: auto;
-  border-radius: 12px;
-`;
-
-const Footer = styled.div`
-  margin-top: 20px;
-`;
-
-const FooterLink = styled.a`
-  color: #00bfff;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 14px;
-  display: block;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 
 export default Sidebar;
