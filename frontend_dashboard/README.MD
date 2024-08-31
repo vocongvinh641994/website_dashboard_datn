@@ -6,8 +6,10 @@ npm init -y
 
 npm install express react react-dom react-router-dom webpack webpack-cli babel-loader @babel/core @babel/preset-env @babel/preset-react
 npm install --save-dev style-loader css-loader
-
+npm install dotenv-webpack --save-dev
 npm install --save-dev webpack-dev-server react-refresh @pmmmwh/react-refresh-webpack-plugin
+npm install axios
+npm install styled-components recharts
 
 
 

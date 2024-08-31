@@ -1,4 +1,5 @@
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -15,7 +16,7 @@ module.exports = {
         static: path.resolve(__dirname, 'public'), // Updated from contentBase to static
         hot: true,
         open: true,
-        port: 3000,
+        port: 7000,
     },
     module: {
         rules: [
@@ -38,5 +39,6 @@ module.exports = {
     },
     plugins: [
         isDevelopment && new ReactRefreshWebpackPlugin(),
+        new Dotenv()
     ].filter(Boolean),
 };
