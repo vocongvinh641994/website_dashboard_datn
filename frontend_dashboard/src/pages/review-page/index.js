@@ -1,72 +1,92 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const ReviewPage = () => {
-  const data = [
-    {
-      item: 'Macbook Air M1',
-      productId: '#XGY-356',
-      dateAdded: '02 Apr, 2024',
-      price: '$1,230',
-      status: 'In Stock',
-      quantity: '58 PCS',
-      statusColor: '#e0f3ff',
-      textColor: '#007bff',
-    },
-    {
-      item: 'Surface Laptop 4',
-      productId: '#YHD-047',
-      dateAdded: '01 Apr, 2024',
-      price: '$1,060',
-      status: 'Out of Stock',
-      quantity: '0 PCS',
-      statusColor: '#ffe0e0',
-      textColor: '#ff4d4d',
-    },
-    {
-      item: 'Logitech MX 250',
-      productId: '#SRR-678',
-      dateAdded: '24 Mar, 2024',
-      price: '$64',
-      status: 'In Stock',
-      quantity: '290 PCS',
-      statusColor: '#e0f3ff',
-      textColor: '#007bff',
-    },
-    // More items...
-  ];
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalReviews, setTotalReviews] = useState(0);
+
+  const limit = 5; // Number of items per page
+
+  useEffect(() => {
+    // Fetch reviews from API
+    const fetchReviews = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACK_END_HOST}/api/reviews`, {
+          params: { page: currentPage, limit },
+        });
+        setReviews(response.data.reviews);
+        setTotalPages(response.data.totalPages);
+        setTotalReviews(response.data.totalReviews);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch reviews');
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [currentPage]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
     <Container>
-      <Title>Stock Report</Title>
-      <Subtitle>Total {data.length} Items in the Stock</Subtitle>
+      <Title>Danh sách đánh giá</Title>
+      <Subtitle>Tổng cộng {reviews.length} đánh giá</Subtitle>
       <Table>
         <thead>
           <tr>
-            <TH>ITEM</TH>
-            <TH>PRODUCT ID</TH>
-            <TH>DATE ADDED</TH>
-            <TH>PRICE</TH>
-            <TH>STATUS</TH>
-            <TH>QTY</TH>
+            <TH>ID</TH>
+            <TH>Tên</TH>
+            <TH>Đánh giá</TH>
+            <TH>Tiêu đề</TH>
+            <TH>Nội dung</TH>
+            <TH>Ngày</TH>
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {reviews.map((review, index) => (
             <TR key={index}>
-              <TD>{item.item}</TD>
-              <TD>{item.productId}</TD>
-              <TD>{item.dateAdded}</TD>
-              <TD>{item.price}</TD>
-              <TD>
-                <StatusBadge statusColor={item.statusColor} textColor={item.textColor}>
-                  {item.status}
-                </StatusBadge>
-              </TD>
-              <TD>{item.quantity}</TD>
+              <TD>{review.id}</TD>
+              <TD>{review.name}</TD>
+              <TD>{review.rating}</TD>
+              <TD>{review.title}</TD>
+              <TD>{review.content}</TD>
+              <TD>{new Date(review.createdAt).toLocaleDateString()}</TD>
             </TR>
           ))}
         </tbody>
       </Table>
+      <Pagination>
+        <Button onClick={handlePrevPage} disabled={currentPage === 1}>
+          Previous
+        </Button>
+        <PageInfo>
+          Page {currentPage} of {totalPages}
+        </PageInfo>
+        <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next
+        </Button>
+      </Pagination>
     </Container>
   );
 };
@@ -111,13 +131,27 @@ const TD = styled.td`
   color: #333;
 `;
 
-const StatusBadge = styled.span`
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 12px;
-  background-color: ${({ statusColor }) => statusColor};
-  color: ${({ textColor }) => textColor};
-  font-size: 12px;
+const Pagination = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+const PageInfo = styled.span`
+  font-size: 14px;
 `;
 
 export default ReviewPage;
