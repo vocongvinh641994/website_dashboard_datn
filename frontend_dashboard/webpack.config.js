@@ -2,7 +2,13 @@ const path = require('path');
 const Dotenv = require('dotenv-webpack');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
+// Ensure that environment variables are loaded properly
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const port = process.env.PORT || 8088;  // Fallback to 8088 if PORT is not defined
+const backEndHost = process.env.REACT_APP_BACK_END_HOST || '172.21.220.172:8089';  // Fallback to localhost:8080 if not defined
+
+// Separate host and port (in case REACT_APP_BACK_END_HOST includes port)
+const [host, backendPort] = backEndHost.split(':');
 
 module.exports = {
     entry: './src/index.js',
@@ -13,10 +19,18 @@ module.exports = {
     mode: isDevelopment ? 'development' : 'production',
     devtool: isDevelopment ? 'eval-source-map' : 'source-map',
     devServer: {
-        static: path.resolve(__dirname, 'public'), // Updated from contentBase to static
+        static: path.resolve(__dirname, 'public'),
         hot: true,
         open: true,
-        port: 7000,
+        port: port,  // Use port from .env or fallback to 8088
+        host: host || 'localhost',  // Use extracted host from REACT_APP_BACK_END_HOST
+        proxy: [
+            {
+                context: ['/api'],  // Context for API routes to be proxied
+                target: `http://${host}:${backendPort || 8080}`,  // Use the extracted host and port from .env
+                changeOrigin: true,
+            },
+        ],
     },
     module: {
         rules: [
@@ -39,6 +53,8 @@ module.exports = {
     },
     plugins: [
         isDevelopment && new ReactRefreshWebpackPlugin(),
-        new Dotenv()
+        new Dotenv({
+            systemvars: true,  // Ensures environment variables from the system are loaded as well
+        }),  // Load environment variables from .env
     ].filter(Boolean),
 };

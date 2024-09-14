@@ -17,7 +17,9 @@ const ReviewPage = () => {
     const fetchReviews = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACK_END_HOST}/api/reviews`, {
+        console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
+        const response = await axios.get(`/api/reviews`, {
+          baseURL: process.env.REACT_APP_BACK_END_HOST,
           params: { page: currentPage, limit },
         });
         setReviews(response.data.reviews);

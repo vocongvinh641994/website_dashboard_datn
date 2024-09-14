@@ -43,3 +43,11 @@ node server.js
 
 
 http://localhost:3000
+
+.env
+
+PORT=8088
+NODE_ENV=development
+REACT_APP_BACK_END_HOST=http://172.21.220.172:8089
+
+//note them http://
