@@ -48,6 +48,6 @@ http://localhost:3000
 
 PORT=8088
 NODE_ENV=development
-REACT_APP_BACK_END_HOST=http://172.21.220.172:8089
+REACT_APP_BACK_END_HOST=http://192.168.1.99:8089
 
 //note them http://

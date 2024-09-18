@@ -12,28 +12,59 @@ const ReviewPage = () => {
 
   const limit = 5; // Number of items per page
 
-  useEffect(() => {
-    // Fetch reviews from API
-    const fetchReviews = async () => {
-      setLoading(true);
-      try {
-        console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
-        const response = await axios.get(`/api/reviews`, {
-          baseURL: process.env.REACT_APP_BACK_END_HOST,
-          params: { page: currentPage, limit },
-        });
-        setReviews(response.data.reviews);
-        setTotalPages(response.data.totalPages);
-        setTotalReviews(response.data.totalReviews);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch reviews');
-        setLoading(false);
+  // Fetch reviews function
+  const fetchReviews = async (isSync = false) => {
+    setLoading(true);
+    try {
+      console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
+      const response = await axios.get(`/api/reviews-sentiments`, {
+        baseURL: process.env.REACT_APP_BACK_END_HOST,
+        params: { page: currentPage, limit },
+      });
+      setReviews(response.data.reviews);
+      setTotalPages(response.data.totalPages);
+      setTotalReviews(response.data.totalReviews);
+      
+      if (isSync) {
+        setCurrentPage(1); // Reset pagination when sync happens
       }
-    };
+      
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch reviews');
+      setLoading(false);
+    }
+  };
 
+  // Fetch reviews function
+  const syncSentimentReviews = async () => {
+    setLoading(true);
+    try {
+      console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
+      const response = await axios.post(`/api/reviews/sync`, {
+        baseURL: process.env.REACT_APP_BACK_END_HOST,
+        params: {  },
+      });
+      fetchReviews(true);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchReviews();
-  }, [currentPage]);
+  }, [currentPage, limit]);
+
+  // Reload function keeps the current page
+  const handleReload = () => {
+    fetchReviews(true);
+  };
+
+  // Sync function resets everything to initial state
+  const handleSync = () => {
+    fetchReviews(true); // Sync with reset
+  };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -47,13 +78,41 @@ const ReviewPage = () => {
     }
   };
 
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <PageNumber
+          key={i}
+          active={i === currentPage}
+          onClick={() => handlePageClick(i)}
+        >
+          {i}
+        </PageNumber>
+      );
+    }
+    return pageNumbers;
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
+  if (reviews.length === 0) return <p>No reviews available.</p>;
 
   return (
     <Container>
       <Title>Danh sách đánh giá</Title>
-      <Subtitle>Tổng cộng {reviews.length} đánh giá</Subtitle>
+      <Subtitle>Tổng cộng {totalReviews} đánh giá</Subtitle>
+      
+      {/* New Buttons for Reload and Sync */}
+      <ButtonGroup>
+        <Button onClick={handleReload}>Reload</Button>
+        <Button onClick={syncSentimentReviews}>Sync</Button>
+      </ButtonGroup>
+
       <Table>
         <thead>
           <tr>
@@ -63,6 +122,8 @@ const ReviewPage = () => {
             <TH>Tiêu đề</TH>
             <TH>Nội dung</TH>
             <TH>Ngày</TH>
+            <TH>Sentiment</TH>
+            <TH>Loại</TH>
           </tr>
         </thead>
         <tbody>
@@ -74,6 +135,8 @@ const ReviewPage = () => {
               <TD>{review.title}</TD>
               <TD>{review.content}</TD>
               <TD>{new Date(review.createdAt).toLocaleDateString()}</TD>
+              <TD>{review.sentimentAssociated.sentiment}</TD>
+              <TD>{review.sentimentAssociated.reviewsCategory}</TD>
             </TR>
           ))}
         </tbody>
@@ -82,9 +145,7 @@ const ReviewPage = () => {
         <Button onClick={handlePrevPage} disabled={currentPage === 1}>
           Previous
         </Button>
-        <PageInfo>
-          Page {currentPage} of {totalPages}
-        </PageInfo>
+        <PageNumbers>{renderPageNumbers()}</PageNumbers>
         <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
           Next
         </Button>
@@ -106,6 +167,12 @@ const Title = styled.h1`
 const Subtitle = styled.p`
   font-size: 14px;
   color: #888;
+  margin-bottom: 20px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 10px;
   margin-bottom: 20px;
 `;
 
@@ -136,6 +203,7 @@ const TD = styled.td`
 const Pagination = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 20px;
 `;
 
@@ -152,8 +220,22 @@ const Button = styled.button`
   }
 `;
 
-const PageInfo = styled.span`
-  font-size: 14px;
+const PageNumbers = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const PageNumber = styled.span`
+  padding: 10px;
+  cursor: pointer;
+  background-color: ${({ active }) => (active ? '#007bff' : '#fff')};
+  color: ${({ active }) => (active ? '#fff' : '#007bff')};
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  &:hover {
+    background-color: #007bff;
+    color: white;
+  }
 `;
 
 export default ReviewPage;
