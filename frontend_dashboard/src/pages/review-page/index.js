@@ -128,6 +128,7 @@ const ReviewPage = () => {
         </thead>
         <tbody>
           {reviews.map((review, index) => (
+            
             <TR key={index}>
               <TD>{review.id}</TD>
               <TD>{review.name}</TD>
@@ -135,8 +136,9 @@ const ReviewPage = () => {
               <TD>{review.title}</TD>
               <TD>{review.content}</TD>
               <TD>{new Date(review.createdAt).toLocaleDateString()}</TD>
-              <TD>{review.sentimentAssociated.sentiment}</TD>
-              <TD>{review.sentimentAssociated.reviewsCategory}</TD>
+              <TD>{review.sentimentAssociated ? review.sentimentAssociated.sentiment : ''}</TD>
+              <TD>{review.sentimentAssociated ? review.sentimentAssociated.reviewsCategory : ''}</TD>
+
             </TR>
           ))}
         </tbody>
