@@ -37,20 +37,26 @@ const ReviewPage = () => {
   };
 
   // Fetch reviews function
-  const syncSentimentReviews = async () => {
-    setLoading(true);
-    try {
-      console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
-      const response = await axios.post(`/api/reviews/sync`, {
-        baseURL: process.env.REACT_APP_BACK_END_HOST,
-        params: {  },
-      });
-      fetchReviews(true);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-    }
-  };
+const syncSentimentReviews = async () => {
+  setLoading(true);
+  try {
+    console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
+
+    const response = await axios.post(
+      `${process.env.REACT_APP_BACK_END_HOST}/api/reviews/sync`, // full URL
+      {}, // request body, you can add any data you want to send in the body here
+      {
+        params: {}, // if there are query parameters, add them here
+      }
+    );
+
+    fetchReviews(true);
+    setLoading(false);
+  } catch (err) {
+    console.error('Error fetching reviews:', err);
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchReviews();
