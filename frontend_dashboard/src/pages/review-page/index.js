@@ -136,8 +136,8 @@ const ReviewPage = () => {
               <TD>{review.title}</TD>
               <TD>{review.content}</TD>
               <TD>{new Date(review.createdAt).toLocaleDateString()}</TD>
-              <TD>{review.sentimentAssociated ? review.sentimentAssociated.sentiment : ''}</TD>
-              <TD>{review.sentimentAssociated ? review.sentimentAssociated.reviewsCategory : ''}</TD>
+              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? '') : ''}</TD>
+              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? '') : ''}</TD>
 
             </TR>
           ))}
