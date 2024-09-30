@@ -14,7 +14,7 @@ const ReviewPage = () => {
 
   // Fetch reviews function
   const fetchReviews = async (isSync = false) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
       const response = await axios.get(`/api/reviews-sentiments`, {
@@ -38,7 +38,7 @@ const ReviewPage = () => {
 
   // Fetch reviews function
 const syncSentimentReviews = async () => {
-  setLoading(true);
+  // setLoading(true);
   try {
     console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
 
@@ -142,8 +142,8 @@ const syncSentimentReviews = async () => {
               <TD>{review.title}</TD>
               <TD>{review.content}</TD>
               <TD>{new Date(review.createdAt).toLocaleDateString()}</TD>
-              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? '') : ''}</TD>
-              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? '') : ''}</TD>
+              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? 'Unknown') : 'Unknown'}</TD>
+              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? 'Unknown') : 'Unknown'}</TD>
 
             </TR>
           ))}
