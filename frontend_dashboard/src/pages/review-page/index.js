@@ -89,8 +89,22 @@ const syncSentimentReviews = async () => {
   };
 
   const renderPageNumbers = () => {
+    const maxPageNumbers = 5; // Limit to 5 page numbers at a time
+    const halfRange = Math.floor(maxPageNumbers / 2);
+    
+    let startPage = Math.max(1, currentPage - halfRange);
+    let endPage = Math.min(totalPages, currentPage + halfRange);
+  
+    // Ensure there are always 5 numbers showing when possible
+    if (currentPage <= halfRange) {
+      endPage = Math.min(totalPages, maxPageNumbers);
+    }
+    if (currentPage + halfRange >= totalPages) {
+      startPage = Math.max(1, totalPages - maxPageNumbers + 1);
+    }
+  
     const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <PageNumber
           key={i}
