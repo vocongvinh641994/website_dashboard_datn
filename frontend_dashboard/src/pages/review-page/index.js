@@ -182,17 +182,17 @@ const isNewReview = (createdAt) => {
       <Pagination>
       <ButtonComponent>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-          <Button onClick={handleFirstPage} disabled={currentPage === 1}>
+          <Button style={{width:80}} onClick={handleFirstPage} disabled={currentPage === 1}>
             First
           </Button>
-          <Button onClick={handlePrevPage} disabled={currentPage === 1}>
+          <Button style={{width:80, marginRight:36}} onClick={handlePrevPage} disabled={currentPage === 1}>
             Previous
           </Button>
           <PageNumbers>{renderPageNumbers()}</PageNumbers>
-          <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          <Button style={{width:80, marginLeft: 36}} onClick={handleNextPage} disabled={currentPage === totalPages}>
             Next
           </Button>
-          <Button onClick={handleLastPage} disabled={currentPage === totalPages}>
+          <Button style={{width:80}} onClick={handleLastPage} disabled={currentPage === totalPages}>
             Last
           </Button>
         </div>
