@@ -7,19 +7,24 @@ const Sidebar = () => {
 
   return (
     <SidebarContainer>
-      <LogoContainer>
-        <Logo>ADMIN</Logo>
-      </LogoContainer>
+      {/* <LogoContainer>
+        <Logo on>ADMIN</Logo>
+      </LogoContainer> */}
       <NavSection>
+             <NavItem onClick={() => navigate('/')}>
+          <NavLink>
+            <Icon>🏠︎</Icon> Home
+          </NavLink>
+        </NavItem>
         <NavItem onClick={() => navigate('/reviews')}>
           <NavLink>
-            <Icon>✏️</Icon> Đánh giá
+            <Icon>✏️</Icon> Review
           </NavLink>
         </NavItem>
         <SectionTitle>EXTRAS</SectionTitle>
         <NavItem onClick={() => navigate('/login')}>
           <NavLink>
-            <Icon>📄</Icon> Đăng xuất
+            <Icon>📄</Icon> Logout
           </NavLink>
         </NavItem>
       </NavSection>
