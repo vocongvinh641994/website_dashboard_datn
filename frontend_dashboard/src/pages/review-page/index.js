@@ -122,6 +122,22 @@ const syncSentimentReviews = async () => {
   if (error) return <p>{error}</p>;
   if (reviews.length === 0) return <p>No reviews available.</p>;
 
+  const handleFirstPage = () => {
+    setCurrentPage(1);
+  };
+  
+  const handleLastPage = () => {
+    setCurrentPage(totalPages);
+  };
+
+  // Define a function to check if the review is new
+const isNewReview = (createdAt) => {
+  const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+  const currentTime = new Date();
+  const reviewTime = new Date(createdAt);
+  return currentTime - reviewTime < oneDay;
+};
+
   return (
     <Container>
       <Title>Danh sách đánh giá</Title>
@@ -155,7 +171,7 @@ const syncSentimentReviews = async () => {
               <TD>{review.rating}</TD>
               <TD>{review.title}</TD>
               <TD>{review.content}</TD>
-              <TD>{new Date(review.createdAt).toLocaleDateString()}</TD>
+              <TD>{isNewReview(review.createdAt) && <NewIcon>🆕</NewIcon>} {new Date(review.createdAt).toLocaleDateString()}</TD>
               <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? 'Unknown') : 'Unknown'}</TD>
               <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? 'Unknown') : 'Unknown'}</TD>
 
@@ -164,13 +180,23 @@ const syncSentimentReviews = async () => {
         </tbody>
       </Table>
       <Pagination>
-        <Button onClick={handlePrevPage} disabled={currentPage === 1}>
-          Previous
-        </Button>
-        <PageNumbers>{renderPageNumbers()}</PageNumbers>
-        <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Next
-        </Button>
+      <ButtonComponent>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <Button onClick={handleFirstPage} disabled={currentPage === 1}>
+            First
+          </Button>
+          <Button onClick={handlePrevPage} disabled={currentPage === 1}>
+            Previous
+          </Button>
+          <PageNumbers>{renderPageNumbers()}</PageNumbers>
+          <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+            Next
+          </Button>
+          <Button onClick={handleLastPage} disabled={currentPage === totalPages}>
+            Last
+          </Button>
+        </div>
+    </ButtonComponent>
       </Pagination>
     </Container>
   );
@@ -224,9 +250,18 @@ const TD = styled.td`
 
 const Pagination = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* This will center the content horizontally */
   align-items: center;
+  gap: 10px; /* Adds space between each button */
   margin-top: 20px;
+  width: 100%; /* Make sure the pagination takes the full width of the container */
+`;
+
+const ButtonComponent = styled.div`
+  display: flex;
+  justify-content: center; /* Centers the button group */
+  align-items: center;
+  gap: 10px; /* Adds space between each button */
 `;
 
 const Button = styled.button`
@@ -259,5 +294,13 @@ const PageNumber = styled.span`
     color: white;
   }
 `;
+
+// Styled Component for the "New" icon or label
+const NewIcon = styled.span`
+  margin-left: 8px;
+  color: red;
+  font-weight: bold;
+`;
+
 
 export default ReviewPage;
