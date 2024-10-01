@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import MetricCard from '../meric-card';
 
 const MericCardList = () => {
+  const [reviews, setReviews] = useState([]);
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
 
@@ -22,12 +23,14 @@ const MericCardList = () => {
   return (
     <>
    <FilterContainer>
+    <div style={{marginRight:8}}>Month:</div> 
         <InputField
           type="number"
           placeholder="Month"
           value={month}
           onChange={(e) => setMonth(e.target.value)}
         />
+        <div style={{marginRight:8}}>Year:</div> 
         <InputField
           type="number"
           placeholder="Year"
@@ -51,17 +54,56 @@ const MericCardList = () => {
           value="1,000"
           percentageChange="84.7% ↑"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
-          backgroundColor="#fdcb6e"
+          backgroundColor="#f0de89"
         />
         <MetricCard
           title="Negative"
           value="1,400"
           percentageChange="-23.6% ↓"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
-          backgroundColor="#d63031"
+          backgroundColor="#ffaaa5"
+        />
+
+      <MetricCard
+          title="Unknown"
+          value="1,400"
+          percentageChange="-23.6% ↓"
+          chart={<div> {/* Replace with actual chart component or SVG */} </div>}
+          backgroundColor="#D2C0B0"
         />
       </MetricsRow>
     </DashboardContainer>
+
+    <Table>
+        <thead>
+          <tr>
+            <TH>ID</TH>
+            <TH>Tên</TH>
+            <TH>Đánh giá</TH>
+            <TH>Tiêu đề</TH>
+            <TH>Nội dung</TH>
+            <TH>Ngày</TH>
+            <TH>Sentiment</TH>
+            <TH>Loại</TH>
+          </tr>
+        </thead>
+        <tbody>
+          {reviews.map((review, index) => (
+            
+            <TR key={index}>
+              <TD>{review.id}</TD>
+              <TD>{review.name}</TD>
+              <TD>{review.rating}</TD>
+              <TD>{review.title}</TD>
+              <TD>{review.content}</TD>
+              <TD>{isNewReview(review.createdAt) && <NewIcon>🆕</NewIcon>} {new Date(review.createdAt).toLocaleDateString()}</TD>
+              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? 'Unknown') : 'Unknown'}</TD>
+              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? 'Unknown') : 'Unknown'}</TD>
+
+            </TR>
+          ))}
+        </tbody>
+      </Table>
     </>
   );
 };
@@ -81,8 +123,8 @@ const MetricsRow = styled.div`
 // Styled Components
 const FilterContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center; // Centers content horizontally
+  align-items: center; // Optional: centers content vertically within the container (if needed)
   margin-bottom: 20px;
 `;
 
@@ -105,6 +147,25 @@ const SearchButton = styled.button`
   
   &:hover {
     background-color: #0056b3;
+  }
+`;
+
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+const TH = styled.th`
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #555;
+`;
+
+const TR = styled.tr`
+  &:nth-child(even) {
+    background-color: #f9f9f9;
   }
 `;
 
