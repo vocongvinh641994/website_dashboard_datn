@@ -9,7 +9,6 @@ const MetricCard = ({ title, value, percentageChange, chart, backgroundColor }) 
         <PercentageChange>{percentageChange}</PercentageChange>
       </CardHeader>
       <Title>{title}</Title>
-      <Chart>{chart}</Chart>
     </Card>
   );
 };
@@ -33,25 +32,20 @@ const CardHeader = styled.div`
 `;
 
 const Value = styled.div`
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
 `;
 
 const PercentageChange = styled.div`
-  font-size: 14px;
+  font-size: 20px;
   color: #fff;
   opacity: 0.8;
 `;
 
 const Title = styled.div`
-  font-size: 14px;
+  font-size: 20px;
   color: #fff;
   opacity: 0.7;
-  margin-bottom: 10px;
-`;
-
-const Chart = styled.div`
-  height: 50px;
 `;
 
 export default MetricCard;

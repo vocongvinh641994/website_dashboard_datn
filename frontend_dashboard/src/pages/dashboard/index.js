@@ -17,7 +17,6 @@ const Dashboard = () => {
         <ContentContainer>
           <Outlet /> {/* This is where the routed content will be displayed */}
         </ContentContainer>
-        {/* <MericCardList /> */}
       </MainContent>
     </DashboardContainer>
   );

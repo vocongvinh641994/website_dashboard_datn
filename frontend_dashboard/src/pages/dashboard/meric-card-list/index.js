@@ -7,29 +7,22 @@ const MericCardList = () => {
     <DashboardContainer>
       <MetricsRow>
         <MetricCard
-          title="Users"
-          value="26K"
-          percentageChange="-12.4% ↓"
-          chart={<div> {/* Replace with actual chart component or SVG */} </div>}
-          backgroundColor="#6c5ce7"
-        />
-        <MetricCard
-          title="Income"
-          value="$6,200"
+          title="Positive"
+          value="6,200"
           percentageChange="40.9% ↑"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
-          backgroundColor="#0984e3"
+          backgroundColor="#63BC46"
         />
         <MetricCard
-          title="Conversion Rate"
-          value="2.49%"
+          title="Neutral"
+          value="1,000"
           percentageChange="84.7% ↑"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
           backgroundColor="#fdcb6e"
         />
         <MetricCard
-          title="Sessions"
-          value="44K"
+          title="Negative"
+          value="1,400"
           percentageChange="-23.6% ↓"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
           backgroundColor="#d63031"

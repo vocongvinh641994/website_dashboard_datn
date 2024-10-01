@@ -10,7 +10,6 @@ const App = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<Dashboard />}>
-        {/* Nested routes within Dashboard */}
         <Route index element={<MericCardList />} />  {/* Default content */}
         <Route path="reviews" element={<ReviewPage />} />  {/* Content for Đánh giá */}
       </Route>
