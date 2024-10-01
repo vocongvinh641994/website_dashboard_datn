@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import MetricCard from '../meric-card';
 
 const MericCardList = () => {
-  const [reviews, setReviews] = useState([]);
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
 
@@ -18,6 +17,29 @@ const MericCardList = () => {
   const handleSearch = () => {
     // Handle search logic here
     console.log('Searching for:', { month, year });
+  };
+
+  const fetchReviews = async (isSync = false) => {
+    // setLoading(true);
+    try {
+      console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
+      const response = await axios.get(`/api/reviews-sentiments`, {
+        baseURL: process.env.REACT_APP_BACK_END_HOST,
+        params: { page: currentPage, limit, name: searchName },
+      });
+      setReviews(response.data.reviews);
+      setTotalPages(response.data.totalPages);
+      setTotalReviews(response.data.totalReviews);
+      
+      if (isSync) {
+        setCurrentPage(1); // Reset pagination when sync happens
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch reviews');
+      setLoading(false);
+    }
   };
   
   return (
@@ -74,36 +96,6 @@ const MericCardList = () => {
       </MetricsRow>
     </DashboardContainer>
 
-    <Table>
-        <thead>
-          <tr>
-            <TH>ID</TH>
-            <TH>Tên</TH>
-            <TH>Đánh giá</TH>
-            <TH>Tiêu đề</TH>
-            <TH>Nội dung</TH>
-            <TH>Ngày</TH>
-            <TH>Sentiment</TH>
-            <TH>Loại</TH>
-          </tr>
-        </thead>
-        <tbody>
-          {reviews.map((review, index) => (
-            
-            <TR key={index}>
-              <TD>{review.id}</TD>
-              <TD>{review.name}</TD>
-              <TD>{review.rating}</TD>
-              <TD>{review.title}</TD>
-              <TD>{review.content}</TD>
-              <TD>{isNewReview(review.createdAt) && <NewIcon>🆕</NewIcon>} {new Date(review.createdAt).toLocaleDateString()}</TD>
-              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? 'Unknown') : 'Unknown'}</TD>
-              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? 'Unknown') : 'Unknown'}</TD>
-
-            </TR>
-          ))}
-        </tbody>
-      </Table>
     </>
   );
 };
