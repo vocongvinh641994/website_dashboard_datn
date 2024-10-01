@@ -9,6 +9,9 @@ const ReviewPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalReviews, setTotalReviews] = useState(0);
+  const [searchName, setSearchName] = useState(''); // New state for search by name
+  const [inputName, setInputName] = useState(''); // State to hold input value
+
 
   const limit = 5; // Number of items per page
 
@@ -19,7 +22,7 @@ const ReviewPage = () => {
       console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
       const response = await axios.get(`/api/reviews-sentiments`, {
         baseURL: process.env.REACT_APP_BACK_END_HOST,
-        params: { page: currentPage, limit },
+        params: { page: currentPage, limit, name: searchName },
       });
       setReviews(response.data.reviews);
       setTotalPages(response.data.totalPages);
@@ -60,7 +63,7 @@ const syncSentimentReviews = async () => {
 
   useEffect(() => {
     fetchReviews();
-  }, [currentPage, limit]);
+  }, [currentPage, limit, searchName]);
 
   // Reload function keeps the current page
   const handleReload = () => {
@@ -133,6 +136,12 @@ const isNewReview = (createdAt) => {
   return currentTime - reviewTime < oneDay;
 };
 
+  // Handle search by name
+  const handleSearchByName = () => {
+    setSearchName(inputName); // Set the search name from the input field
+    setCurrentPage(1); // Reset to the first page when searching
+  };
+
   return (
     <Container>
       <Title>Danh sách đánh giá</Title>
@@ -142,6 +151,14 @@ const isNewReview = (createdAt) => {
       <ButtonGroup>
         <Button onClick={handleReload}>Reload</Button>
         <Button onClick={syncSentimentReviews}>Sync</Button>
+
+        <Input
+          type="text"
+          value={inputName}
+          onChange={(e) => setInputName(e.target.value)}
+          placeholder="Enter name to search"
+        />
+        <Button onClick={handleSearchByName}>Search</Button>
       </ButtonGroup>
 
       <Table>
@@ -295,6 +312,13 @@ const NewIcon = styled.span`
   margin-left: 8px;
   color: red;
   font-weight: bold;
+`;
+
+const Input = styled.input`
+  padding: 10px;
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 `;
 
 
