@@ -67,11 +67,6 @@ const syncSentimentReviews = async () => {
     fetchReviews(true);
   };
 
-  // Sync function resets everything to initial state
-  const handleSync = () => {
-    fetchReviews(true); // Sync with reset
-  };
-
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
