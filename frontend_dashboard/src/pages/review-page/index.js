@@ -118,7 +118,7 @@ const syncSentimentReviews = async () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-  if (reviews.length === 0) return <p>No reviews available.</p>;
+  // if (reviews.length === 0) return <p>No reviews available.</p>;
 
   const handleFirstPage = () => {
     setCurrentPage(1);
