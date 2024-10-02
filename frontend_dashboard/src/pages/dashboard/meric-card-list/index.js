@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import MetricCard from '../meric-card';
 import axios from 'axios';
+import { REVIEW_TYPE } from '../../../utils/review-utils';
 
 const MericCardList = () => {
   const [error, setError] = useState(null);
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
   const [totalReviews, setTotalReviews] = useState([]);
-
+  const [columnData, setColumnData] = useState([]) 
   // Initialize four lists
-  const sentimentNull = [];
+  const sentimentUnknown = [];
   const sentimentPositive = [];
   const sentimentNeutral = [];
   const sentimentNegative = [];
@@ -27,65 +28,61 @@ totalReviews.forEach(review => {
   const sentiment = review.sentimentAssociated;
   
   if (!sentiment) {
-    sentimentNull.push(review);
+    sentimentUnknown.push(review);
   } else {
     const sentimentType = sentiment.sentiment;
-    if (sentimentType === "Positive") {
+    if (sentimentType === REVIEW_TYPE.POSITIVE) {
       sentimentPositive.push(review);
-    } else if (sentimentType === "Neutral") {
+    } else if (sentimentType === REVIEW_TYPE.NEUTRAL) {
       sentimentNeutral.push(review);
-    } else if (sentimentType === "Negative") {
+    } else if (sentimentType === REVIEW_TYPE.NEGATIVE) {
       sentimentNegative.push(review);
     }
   }
 
   // Output the four lists
-console.log("Sentiment Null Reviews:", sentimentNull);
+console.log("Sentiment Null Reviews:", sentimentUnknown);
 console.log("Positive Sentiment Reviews:", sentimentPositive);
 console.log("Neutral Sentiment Reviews:", sentimentNeutral);
 console.log("Negative Sentiment Reviews:", sentimentNegative);
+
+
 });
   }, totalReviews);
 
   const handleSearch = () => {
-    // Handle search logic here
-    console.log('Searching for:', { month, year });
     fetchReviews(month, year)
   };
 
-    // Simulating a list of heights for columns
-    const columnData = [
-      { label: 'Day 1', height: 300 },
-      { label: 'Day 2', height: 200 },
-      { label: 'Day 3', height: 400 },
-      { label: 'Day 4', height: 150 },
-      { label: 'Day 5', height: 350 },
-      { label: 'Day 1', height: 300 },
-      { label: 'Day 2', height: 200 },
-      { label: 'Day 3', height: 400 },
-      { label: 'Day 4', height: 150 },
-      { label: 'Day 5', height: 350 },
-      { label: 'Day 1', height: 300 },
-      { label: 'Day 2', height: 200 },
-      { label: 'Day 3', height: 400 },
-      { label: 'Day 4', height: 150 },
-      { label: 'Day 5', height: 350 },
-      { label: 'Day 1', height: 300 },
-      { label: 'Day 2', height: 200 },
-      { label: 'Day 3', height: 400 },
-      { label: 'Day 4', height: 150 },
-      { label: 'Day 5', height: 350 },
-      { label: 'Day 1', height: 300 },
-      { label: 'Day 2', height: 200 },
-      { label: 'Day 3', height: 400 },
-      { label: 'Day 4', height: 150 },
-      { label: 'Day 5', height: 350 },
-      { label: 'Day 1', height: 300 },
-      { label: 'Day 2', height: 200 },
-      { label: 'Day 3', height: 400 },
-      { label: 'Day 4', height: 150 },
-      { label: 'Day 5', height: 350 },
-    ];
+  const getDetailByType = (reviews, year, month) => {
+    // Function to get the total days in the given month
+    const getDaysInMonth = (year, month) => {
+      return new Date(year, month, 0).getDate(); // month is 1-based, so month 0 is the previous month
+    };
+    
+    // Get the total number of days in the target month
+    const daysInMonth = getDaysInMonth(year, month);
+    
+    // Initialize an array to store the counts for each day of the month
+    const reviewCountsByDay = Array.from({ length: daysInMonth }, (_, i) => ({
+      day: i + 1,  // day starts from 1
+      count: 0     // initialize all counts to 0
+    }));
+    
+    // Loop over each review and count reviews by day
+    reviews.forEach(review => {
+      // Parse the 'createdAt' date
+      const createdAtDate = new Date(review.createdAt);
+      // Check if the review is in the target month and year
+      const day = createdAtDate.getUTCDate();  // Get the day from the date
+      // Increment the count for this day
+      reviewCountsByDay[day - 1].count++;  // Subtract 1 to match array index
+    });
+    
+    // Output the result
+    console.log(reviewCountsByDay);
+    setColumnData(reviewCountsByDay);
+  }
 
     if (error) return <p>{error}</p>;
 
@@ -93,8 +90,8 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
       return (
         <ColumnsContainer>
           {columns.map((column, index) => (
-            <Column key={index} height={column.height}>
-              {column.label}
+            <Column key={index} height={column.count*10}>
+              {column.day}
             </Column>
           ))}
         </ColumnsContainer>
@@ -103,15 +100,40 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
 
     const fetchReviews = async (month, year) => {
       try {
-        console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
         const response = await axios.get(`/api/reviews-sentiments`, {
           baseURL: process.env.REACT_APP_BACK_END_HOST,
           params: { month: month, year: year },
         });
         setTotalReviews(response.data.reviews); 
       } catch (err) {
-        // setError("1111"+ err);
         setError(err.response?.data?.message || 'Failed to fetch reviews');
+      }
+    };
+
+    const didSelectCard = (type) => {
+      switch (type) {
+        case REVIEW_TYPE.POSITIVE:
+          getDetailByType(sentimentPositive, year, month);
+          console.log('Positive card selected');
+          break;
+        
+        case REVIEW_TYPE.NEGATIVE:
+          getDetailByType(sentimentNegative, year, month);
+          console.log('Negative card selected');
+          break;
+    
+        case REVIEW_TYPE.NEUTRAL:
+          getDetailByType(sentimentNeutral, year, month);
+          console.log('Neutral card selected');
+          break;
+    
+        case REVIEW_TYPE.UNKNOWN:
+          getDetailByType(sentimentUnknown, year, month);
+          console.log('Unknown card selected');
+          break;
+    
+        default:
+          console.log('Invalid type');
       }
     };
   
@@ -140,6 +162,7 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
         <MetricCard
           title="Positive"
           value="6,200"
+          onClick={() => didSelectCard(REVIEW_TYPE.POSITIVE)}
           percentageChange="40.9% ↑"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
           backgroundColor="#63BC46"
@@ -147,6 +170,7 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
         <MetricCard
           title="Neutral"
           value="1,000"
+          onClick={() => didSelectCard(REVIEW_TYPE.NEUTRAL)}
           percentageChange="84.7% ↑"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
           backgroundColor="#f0de89"
@@ -154,6 +178,7 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
         <MetricCard
           title="Negative"
           value="1,400"
+          onClick={() => didSelectCard(REVIEW_TYPE.NEGATIVE)}
           percentageChange="-23.6% ↓"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
           backgroundColor="#ffaaa5"
@@ -162,14 +187,14 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
       <MetricCard
           title="Unknown"
           value="1,400"
+          onClick={() => didSelectCard(REVIEW_TYPE.UNKNOWN)}
           percentageChange="-23.6% ↓"
           chart={<div> {/* Replace with actual chart component or SVG */} </div>}
           backgroundColor="#D2C0B0"
         />
       </MetricsRow>
 
-        {/* 5 Columns Section with Dynamic Heights */}
-        <DynamicColumns columns={columnData} />
+      <DynamicColumns columns={columnData} />
 
     </DashboardContainer>
 
@@ -246,8 +271,8 @@ const ColumnsContainer = styled.div`
 `;
 
 const Column = styled.div`
-  background-color: #007bff;
-  color: white;
+  background-color: #2986cc;
+  color: black;
   flex: 1;
   width:8px;
   padding: 2px;

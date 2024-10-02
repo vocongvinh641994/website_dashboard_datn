@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const MetricCard = ({ title, value, percentageChange, chart, backgroundColor }) => {
+const MetricCard = ({ title, value, percentageChange, chart, backgroundColor, onClick }) => {
   return (
-    <Card backgroundColor={backgroundColor}>
+    <Card backgroundColor={backgroundColor}  onClick={onClick}>
       <CardHeader>
         <Value>{value}</Value>
         <PercentageChange>{percentageChange}</PercentageChange>
