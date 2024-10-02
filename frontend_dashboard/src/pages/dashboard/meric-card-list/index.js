@@ -21,11 +21,36 @@ const MericCardList = () => {
 
     // Simulating a list of heights for columns
     const columnData = [
-      { label: 'Column 1', height: 300 },
-      { label: 'Column 2', height: 200 },
-      { label: 'Column 3', height: 400 },
-      { label: 'Column 4', height: 150 },
-      { label: 'Column 5', height: 350 },
+      { label: 'Day 1', height: 300 },
+      { label: 'Day 2', height: 200 },
+      { label: 'Day 3', height: 400 },
+      { label: 'Day 4', height: 150 },
+      { label: 'Day 5', height: 350 },
+      { label: 'Day 1', height: 300 },
+      { label: 'Day 2', height: 200 },
+      { label: 'Day 3', height: 400 },
+      { label: 'Day 4', height: 150 },
+      { label: 'Day 5', height: 350 },
+      { label: 'Day 1', height: 300 },
+      { label: 'Day 2', height: 200 },
+      { label: 'Day 3', height: 400 },
+      { label: 'Day 4', height: 150 },
+      { label: 'Day 5', height: 350 },
+      { label: 'Day 1', height: 300 },
+      { label: 'Day 2', height: 200 },
+      { label: 'Day 3', height: 400 },
+      { label: 'Day 4', height: 150 },
+      { label: 'Day 5', height: 350 },
+      { label: 'Day 1', height: 300 },
+      { label: 'Day 2', height: 200 },
+      { label: 'Day 3', height: 400 },
+      { label: 'Day 4', height: 150 },
+      { label: 'Day 5', height: 350 },
+      { label: 'Day 1', height: 300 },
+      { label: 'Day 2', height: 200 },
+      { label: 'Day 3', height: 400 },
+      { label: 'Day 4', height: 150 },
+      { label: 'Day 5', height: 350 },
     ];
 
     const DynamicColumns = ({ columns }) => {
@@ -173,8 +198,9 @@ const Column = styled.div`
   background-color: #007bff;
   color: white;
   flex: 1;
-  padding: 20px;
-  margin-right: 10px;
+  width:8px;
+  padding: 2px;
+  margin-right: 4px;
   text-align: center;
   border-radius: 4px;
   height: ${({ height }) => `${height}px`}; // Dynamic height based on prop
