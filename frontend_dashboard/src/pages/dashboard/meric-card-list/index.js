@@ -191,6 +191,7 @@ const TR = styled.tr`
 const ColumnsContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: flex-end; /* Align columns from the bottom */
   margin-top: 20px;
 `;
 
