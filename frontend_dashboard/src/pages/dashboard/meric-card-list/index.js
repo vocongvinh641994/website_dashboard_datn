@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import MetricCard from '../meric-card';
+import axios from 'axios';
 
 const MericCardList = () => {
+  const [error, setError] = useState(null);
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
-
+  const [totalReviews, setTotalReviews] = useState([]);
+  const [detailReviews, setdetailReviews] = useState([]);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -13,10 +16,19 @@ const MericCardList = () => {
     setYear(currentDate.getFullYear());
   }, []);
 
+  useEffect(()=>{
+
+  }, totalReviews);
+
+  useEffect(()=>{
+
+  }, detailReviews);
+
 
   const handleSearch = () => {
     // Handle search logic here
     console.log('Searching for:', { month, year });
+    fetchReviews(month, year)
   };
 
     // Simulating a list of heights for columns
@@ -53,6 +65,8 @@ const MericCardList = () => {
       { label: 'Day 5', height: 350 },
     ];
 
+    if (error) return <p>{error}</p>;
+
     const DynamicColumns = ({ columns }) => {
       return (
         <ColumnsContainer>
@@ -63,6 +77,20 @@ const MericCardList = () => {
           ))}
         </ColumnsContainer>
       );
+    };
+
+    const fetchReviews = async (month, year) => {
+      try {
+        console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
+        const response = await axios.get(`/api/reviews-sentiments`, {
+          baseURL: process.env.REACT_APP_BACK_END_HOST,
+          params: { month: month, year: year },
+        });
+        setTotalReviews(response.data.reviews); 
+      } catch (err) {
+        // setError("1111"+ err);
+        setError(err.response?.data?.message || 'Failed to fetch reviews');
+      }
     };
   
   return (
