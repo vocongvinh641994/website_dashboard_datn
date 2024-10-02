@@ -8,9 +8,9 @@ const MericCardList = () => {
   const [error, setError] = useState(null);
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
-  const [totalReviews, setTotalReviews] = useState([]);
   const [columnData, setColumnData] = useState([]) 
   // Initialize four lists
+  const totalReviews = [];
   const sentimentUnknown = [];
   const sentimentPositive = [];
   const sentimentNeutral = [];
@@ -22,9 +22,9 @@ const MericCardList = () => {
     setYear(currentDate.getFullYear());
   }, []);
 
-  useEffect(()=>{
+  const divideReviews = (reviews)=>{
 // Divide the reviews into four categories
-totalReviews.forEach(review => {
+  reviews.forEach(review => {
   const sentiment = review.sentimentAssociated;
   
   if (!sentiment) {
@@ -47,14 +47,15 @@ console.log("Neutral Sentiment Reviews:", sentimentNeutral);
 console.log("Negative Sentiment Reviews:", sentimentNegative);
 
 
-});
-  }, totalReviews);
+})};
 
   const handleSearch = () => {
     fetchReviews(month, year)
   };
 
   const getDetailByType = (reviews, year, month) => {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+    console.log(reviews);
     // Function to get the total days in the given month
     const getDaysInMonth = (year, month) => {
       return new Date(year, month, 0).getDate(); // month is 1-based, so month 0 is the previous month
@@ -90,7 +91,7 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
       return (
         <ColumnsContainer>
           {columns.map((column, index) => (
-            <Column key={index} height={column.count*10}>
+            <Column key={index} height={column.count}>
               {column.day}
             </Column>
           ))}
@@ -104,7 +105,7 @@ console.log("Negative Sentiment Reviews:", sentimentNegative);
           baseURL: process.env.REACT_APP_BACK_END_HOST,
           params: { month: month, year: year },
         });
-        setTotalReviews(response.data.reviews); 
+        divideReviews(response.data.reviews);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch reviews');
       }
