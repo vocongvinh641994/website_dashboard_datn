@@ -20,11 +20,25 @@ const MericCardList = () => {
   };
 
     // Simulating a list of heights for columns
-    const columnHeights = [
-      300, 200, 400, 150, 350, 250, 280, 220, 170, 330,
-      290, 240, 310, 260, 390, 180, 340, 370, 320, 270,
-      360, 230, 140, 120, 110, 130, 410, 430, 450, 470
+    const columnData = [
+      { label: 'Column 1', height: 300 },
+      { label: 'Column 2', height: 200 },
+      { label: 'Column 3', height: 400 },
+      { label: 'Column 4', height: 150 },
+      { label: 'Column 5', height: 350 },
     ];
+
+    const DynamicColumns = ({ columns }) => {
+      return (
+        <ColumnsContainer>
+          {columns.map((column, index) => (
+            <Column key={index} height={column.height}>
+              {column.label}
+            </Column>
+          ))}
+        </ColumnsContainer>
+      );
+    };
   
   return (
     <>
@@ -80,13 +94,8 @@ const MericCardList = () => {
       </MetricsRow>
 
         {/* 5 Columns Section with Dynamic Heights */}
-        <ColumnsContainer>
-          <Column height={300}>Column 1</Column> {/* height = 300px */}
-          <Column height={200}>Column 2</Column> {/* height = 200px */}
-          <Column height={400}>Column 3</Column> {/* height = 400px */}
-          <Column height={150}>Column 4</Column> {/* height = 150px */}
-          <Column height={350}>Column 5</Column> {/* height = 350px */}
-        </ColumnsContainer>
+        <DynamicColumns columns={columnData} />
+
     </DashboardContainer>
 
     </>
