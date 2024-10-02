@@ -8,7 +8,12 @@ const MericCardList = () => {
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
   const [totalReviews, setTotalReviews] = useState([]);
-  const [detailReviews, setdetailReviews] = useState([]);
+
+  // Initialize four lists
+  const sentimentNull = [];
+  const sentimentPositive = [];
+  const sentimentNeutral = [];
+  const sentimentNegative = [];
 
   useEffect(() => {
     const currentDate = new Date();
@@ -17,13 +22,30 @@ const MericCardList = () => {
   }, []);
 
   useEffect(()=>{
+// Divide the reviews into four categories
+totalReviews.forEach(review => {
+  const sentiment = review.sentimentAssociated;
+  
+  if (!sentiment) {
+    sentimentNull.push(review);
+  } else {
+    const sentimentType = sentiment.sentiment;
+    if (sentimentType === "Positive") {
+      sentimentPositive.push(review);
+    } else if (sentimentType === "Neutral") {
+      sentimentNeutral.push(review);
+    } else if (sentimentType === "Negative") {
+      sentimentNegative.push(review);
+    }
+  }
 
+  // Output the four lists
+console.log("Sentiment Null Reviews:", sentimentNull);
+console.log("Positive Sentiment Reviews:", sentimentPositive);
+console.log("Neutral Sentiment Reviews:", sentimentNeutral);
+console.log("Negative Sentiment Reviews:", sentimentNegative);
+});
   }, totalReviews);
-
-  useEffect(()=>{
-
-  }, detailReviews);
-
 
   const handleSearch = () => {
     // Handle search logic here
