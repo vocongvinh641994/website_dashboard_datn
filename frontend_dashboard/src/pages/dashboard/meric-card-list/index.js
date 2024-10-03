@@ -182,7 +182,8 @@ const MericCardList = () => {
             title="Positive"
             value={sentimentPositive.length}
             onClick={() => didSelectCard(REVIEW_TYPE.POSITIVE)}
-            percentageChange="40.9% ↑"
+            // percentageChange="40.9% ↑"
+            percentageChange=""
             chart={<div> {/* Replace with actual chart component or SVG */} </div>}
             backgroundColor="#63BC46"
           />
@@ -190,7 +191,8 @@ const MericCardList = () => {
             title="Neutral"
             value={sentimentNeutral.length}
             onClick={() => didSelectCard(REVIEW_TYPE.NEUTRAL)}
-            percentageChange="84.7% ↑"
+            // percentageChange="84.7% ↑"
+            percentageChange=""
             chart={<div> {/* Replace with actual chart component or SVG */} </div>}
             backgroundColor="#f0de89"
           />
@@ -198,7 +200,8 @@ const MericCardList = () => {
             title="Negative"
             value={sentimentNegative.length}
             onClick={() => didSelectCard(REVIEW_TYPE.NEGATIVE)}
-            percentageChange="-23.6% ↓"
+            // percentageChange="-23.6% ↓"
+            percentageChange=""
             chart={<div> {/* Replace with actual chart component or SVG */} </div>}
             backgroundColor="#ffaaa5"
           />
@@ -206,7 +209,8 @@ const MericCardList = () => {
             title="Unknown"
             value={sentimentUnknown.length}
             onClick={() => didSelectCard(REVIEW_TYPE.UNKNOWN)}
-            percentageChange="-23.6% ↓"
+            // percentageChange="-23.6% ↓"
+            percentageChange=""
             chart={<div> {/* Replace with actual chart component or SVG */} </div>}
             backgroundColor="#D2C0B0"
           />
