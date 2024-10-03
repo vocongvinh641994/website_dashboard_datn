@@ -40,14 +40,14 @@ const ReviewPage = () => {
   };
 
   // Fetch reviews function
-const syncSentimentReviews = async () => {
+const syncSentimentReviews = async (limit) => {
   // setLoading(true);
   try {
     console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
 
     const response = await axios.post(
       `${process.env.REACT_APP_BACK_END_HOST}/api/reviews/sync`, // full URL
-      {}, // request body, you can add any data you want to send in the body here
+      {"limit":limit}, // request body, you can add any data you want to send in the body here
       {
         params: {}, // if there are query parameters, add them here
       }
@@ -150,7 +150,7 @@ const isNewReview = (createdAt) => {
       {/* New Buttons for Reload and Sync */}
       <ButtonGroup>
         <Button onClick={handleReload}>Reload</Button>
-        <Button onClick={syncSentimentReviews}>Sync</Button>
+        <Button onClick={()=>syncSentimentReviews(1)}>Sync</Button>
 
         <Input
           type="text"
