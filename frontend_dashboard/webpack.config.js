@@ -5,7 +5,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 // Ensure that environment variables are loaded properly
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const port = process.env.PORT || 8088;  // Fallback to 8088 if PORT is not defined
-const backEndHost = process.env.REACT_APP_BACK_END_HOST || '10.60.10.163:8089';  // Fallback to localhost:8080 if not defined
+const backEndHost = process.env.REACT_APP_BACK_END_HOST || '103.69.97.156:8089';  // Fallback to localhost:8080 if not defined
 
 // Separate host and port (in case REACT_APP_BACK_END_HOST includes port)
 const [host, backendPort] = backEndHost.split(':');
