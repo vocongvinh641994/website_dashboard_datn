@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 
 const ReviewPage = () => {
@@ -17,7 +17,7 @@ const ReviewPage = () => {
 
   // Fetch reviews function
   const fetchReviews = async (isSync = false) => {
-    // setLoading(true);
+    setLoading(isSync);
     try {
       console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
       const response = await axios.get(`/api/reviews-sentiments`, {
@@ -41,7 +41,7 @@ const ReviewPage = () => {
 
   // Fetch reviews function
 const syncSentimentReviews = async (limit) => {
-  // setLoading(true);
+  setLoading(true);
   try {
     console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
 
@@ -116,8 +116,8 @@ const syncSentimentReviews = async (limit) => {
     return pageNumbers;
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>{error}</p>;
   // if (reviews.length === 0) return <p>No reviews available.</p>;
 
   const handleFirstPage = () => {
@@ -142,8 +142,16 @@ const isNewReview = (createdAt) => {
     setCurrentPage(1); // Reset to the first page when searching
   };
 
+    // Full-screen loader component
+    const FullScreenLoader = () => (
+      <LoaderOverlay>
+        <Loader />
+      </LoaderOverlay>
+    );
+
   return (
     <Container>
+      {loading && <FullScreenLoader />}  {/* Conditionally render loading overlay */}
       <Title>Danh sách đánh giá</Title>
       <Subtitle>Tổng cộng {totalReviews} đánh giá</Subtitle>
       
@@ -319,6 +327,34 @@ const Input = styled.input`
   width: 200px;
   border: 1px solid #ddd;
   border-radius: 5px;
+`;
+
+
+const LoaderOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const spin =  `
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+const Loader = styled.div`
+  border: 1px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 0px solid #3498db;
+  width: 30px;
+  height: 30px;
+  animation: ${spin} 2s linear infinite;
 `;
 
 
