@@ -13,7 +13,7 @@ const ReviewPage = () => {
   const [inputName, setInputName] = useState(''); // State to hold input value
 
 
-  const limit = 5; // Number of items per page
+  const limit = 10; // Number of items per page
 
   // Fetch reviews function
   const fetchReviews = async (isSync = false) => {
@@ -22,7 +22,7 @@ const ReviewPage = () => {
       console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
       const response = await axios.get(`/api/reviews-sentiments`, {
         baseURL: process.env.REACT_APP_BACK_END_HOST,
-        params: { page: currentPage, limit, name: searchName },
+        params: { page: currentPage, limit, keyword: searchName },
       });
       setReviews(response.data.reviews);
       setTotalPages(response.data.totalPages);
@@ -158,13 +158,13 @@ const isNewReview = (createdAt) => {
       {/* New Buttons for Reload and Sync */}
       <ButtonGroup>
         <Button onClick={handleReload}>Reload</Button>
-        <Button onClick={()=>syncSentimentReviews(1)}>Sync</Button>
+        <Button onClick={()=>syncSentimentReviews(10000)}>Sync</Button>
 
         <Input
           type="text"
           value={inputName}
           onChange={(e) => setInputName(e.target.value)}
-          placeholder="Enter name to search"
+          placeholder="Enter name or content to search"
         />
         <Button onClick={handleSearchByName}>Search</Button>
       </ButtonGroup>
@@ -191,7 +191,11 @@ const isNewReview = (createdAt) => {
               <TD>{review.rating}</TD>
               <TD>{review.title}</TD>
               <TD>{review.content}</TD>
-              <TD>{isNewReview(review.createdAt) && <NewIcon>🆕</NewIcon>} {new Date(review.createdAt).toLocaleDateString()}</TD>
+              <TD>{isNewReview(review.createdAt) && <NewIcon>🆕</NewIcon>} {new Date(review.createdAt).toLocaleString('en-GB', { 
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour12: false 
+}).replace(',', '')}</TD>
               <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? 'Unknown') : 'Unknown'}</TD>
               <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? 'Unknown') : 'Unknown'}</TD>
 

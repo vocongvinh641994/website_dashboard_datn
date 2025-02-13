@@ -41,6 +41,8 @@ npx webpack --mode development
 
 node server.js
 
+yarn start
+
 
 http://localhost:3000
 
