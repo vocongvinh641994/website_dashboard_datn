@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
+import { SENTIMENT_NAME } from '../../utils/review-utils';
 
 const ReviewPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -196,7 +197,7 @@ const isNewReview = (createdAt) => {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour12: false 
 }).replace(',', '')}</TD>
-              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.sentiment ?? 'Unknown') : 'Unknown'}</TD>
+              <TD>{review.sentimentAssociated ? (SENTIMENT_NAME[review.sentimentAssociated.sentiment]) : 'Unknown'}</TD>
               <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? 'Unknown') : 'Unknown'}</TD>
 
             </TR>
