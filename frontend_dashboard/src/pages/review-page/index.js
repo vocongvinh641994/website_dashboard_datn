@@ -159,7 +159,7 @@ const isNewReview = (createdAt) => {
       {/* New Buttons for Reload and Sync */}
       <ButtonGroup>
         <Button onClick={handleReload}>Reload</Button>
-        <Button onClick={()=>syncSentimentReviews(10000)}>Sync</Button>
+        <Button onClick={()=>syncSentimentReviews(2)}>Sync</Button>
 
         <Input
           type="text"
