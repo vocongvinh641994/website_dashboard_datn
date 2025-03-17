@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
-import { SENTIMENT_NAME } from '../../utils/review-utils';
+import { getSentimentName, getCategoryName } from '../../utils/review-utils';
 
 const ReviewPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -10,11 +10,12 @@ const ReviewPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalReviews, setTotalReviews] = useState(0);
-  const [searchName, setSearchName] = useState(''); // New state for search by name
+  // const [searchName, setSearchName] = useState(''); // New state for search by name
   const [inputName, setInputName] = useState(''); // State to hold input value
+  const [isOpenAI, setOpenAI] = useState(false);
+  const [groupSelected, setGroupSelected] = useState("");
 
-
-  const limit = 10; // Number of items per page
+  const limit = 5; // Number of items per page
 
   // Fetch reviews function
   const fetchReviews = async (isSync = false) => {
@@ -23,7 +24,7 @@ const ReviewPage = () => {
       console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
       const response = await axios.get(`/api/reviews-sentiments`, {
         baseURL: process.env.REACT_APP_BACK_END_HOST,
-        params: { page: currentPage, limit, keyword: searchName },
+        params: { page: currentPage, limit, keyword: inputName , reviewsCategory: groupSelected },
       });
       setReviews(response.data.reviews);
       setTotalPages(response.data.totalPages);
@@ -41,14 +42,16 @@ const ReviewPage = () => {
   };
 
   // Fetch reviews function
-const syncSentimentReviews = async (limit) => {
+const syncSentimentReviews = async (isOpenAI,limit) => {
   setLoading(true);
   try {
     console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
 
     const response = await axios.post(
       `${process.env.REACT_APP_BACK_END_HOST}/api/reviews/sync`, // full URL
-      {"limit":limit}, // request body, you can add any data you want to send in the body here
+      {"limit":limit,
+        'isOpenAI': isOpenAI
+      }, // request body, you can add any data you want to send in the body here
       {
         params: {}, // if there are query parameters, add them here
       }
@@ -64,7 +67,7 @@ const syncSentimentReviews = async (limit) => {
 
   useEffect(() => {
     fetchReviews();
-  }, [currentPage, limit, searchName]);
+  }, [currentPage, limit]);
 
   // Reload function keeps the current page
   const handleReload = () => {
@@ -138,9 +141,9 @@ const isNewReview = (createdAt) => {
 };
 
   // Handle search by name
-  const handleSearchByName = () => {
-    setSearchName(inputName); // Set the search name from the input field
+  const handleSearch = () => {
     setCurrentPage(1); // Reset to the first page when searching
+    fetchReviews()
   };
 
     // Full-screen loader component
@@ -150,6 +153,11 @@ const isNewReview = (createdAt) => {
       </LoaderOverlay>
     );
 
+    const handleCheckboxChange = (event) => {
+      var isCheck = event.target.checked;
+      setOpenAI(isCheck);
+    };
+
   return (
     <Container>
       {loading && <FullScreenLoader />}  {/* Conditionally render loading overlay */}
@@ -158,16 +166,38 @@ const isNewReview = (createdAt) => {
       
       {/* New Buttons for Reload and Sync */}
       <ButtonGroup>
-        <Button onClick={handleReload}>Reload</Button>
-        <Button onClick={()=>syncSentimentReviews(2)}>Sync</Button>
-
+        <Button onClick={handleReload}>Tải lại</Button>
+    
         <Input
           type="text"
           value={inputName}
           onChange={(e) => setInputName(e.target.value)}
-          placeholder="Enter name or content to search"
+          placeholder="Nhập tên hay nội dung để tìm kiếm"
         />
-        <Button onClick={handleSearchByName}>Search</Button>
+
+      <TH>Nhóm</TH>
+      <select value={groupSelected} onChange={(e) => setGroupSelected(e.target.value)}>
+        <option value="">Tất cả</option>
+        <option value="0">Ứng dụng</option>
+        <option value="1">Tài xế</option>
+        <option value="2">Nhân viên hỗ trợ</option>
+        <option value="3">Ứng dụng và tài xế</option>
+        <option value="4">ứng dụng và nhân viên hỗ trợ</option>
+        <option value="5">Tài xế và nhân viên hỗ trợ</option>
+        <option value="6">Thuộc 3 nhóm</option>
+        <option value="7">Không phân nhóm được</option>
+        <option value="100">Chưa phân nhóm</option>
+      </select>
+
+        <Button onClick={handleSearch}>Tìm kiếm</Button>
+
+        <CheckBoxContainer>
+          <input type="checkbox" onChange={handleCheckboxChange} />
+          <span>OpenAI</span>
+      </CheckBoxContainer>
+
+      <Button onClick={()=>syncSentimentReviews(isOpenAI,5)}>Sync</Button>
+     
       </ButtonGroup>
 
       <Table>
@@ -179,8 +209,11 @@ const isNewReview = (createdAt) => {
             <TH>Tiêu đề</TH>
             <TH>Nội dung</TH>
             <TH>Ngày</TH>
-            <TH>Sentiment</TH>
-            <TH>Loại</TH>
+            <TH>Nhóm</TH>
+            <TH> Application sentiment</TH>
+            <TH>Driver sentiment</TH>
+            <TH>Attendant sentiment</TH>
+           
           </tr>
         </thead>
         <tbody>
@@ -197,11 +230,12 @@ const isNewReview = (createdAt) => {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour12: false 
 }).replace(',', '')}</TD>
-              <TD>{review.sentimentAssociated ? (SENTIMENT_NAME[review.sentimentAssociated.sentiment]) : 'Unknown'}</TD>
-              <TD>{review.sentimentAssociated ? (review.sentimentAssociated.reviewsCategory ?? 'Unknown') : 'Unknown'}</TD>
-
+            <TD>{review.sentimentAssociated ? (getCategoryName(review.sentimentAssociated.reviewsCategory)) : 'Unknown'}</TD>
+            <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.application_sentiment) : "Unknown"}</TD>
+            <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.driver_sentiment): "Unknown"}</TD>
+            <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.operator_sentiment): "Unknown"}</TD>
             </TR>
-          ))}
+          ))}_
         </tbody>
       </Table>
       <Pagination>
@@ -230,6 +264,12 @@ const isNewReview = (createdAt) => {
 // Styled Components
 const Container = styled.div`
   padding: 20px;
+`;
+
+const CheckBoxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
 `;
 
 const Title = styled.h1`

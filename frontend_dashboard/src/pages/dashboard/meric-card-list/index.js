@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import MetricCard from '../meric-card';
 import axios from 'axios';
-import { REVIEW_TYPE, SENTIMENT_NAME } from '../../../utils/review-utils';
+import { REVIEW_TYPE , getSentimentName} from '../../../utils/review-utils';
 
 const MericCardList = () => {
   const [error, setError] = useState(null);
@@ -96,7 +96,7 @@ const MericCardList = () => {
     // Output the result
     console.log(reviewCountsByDay);
     setColumnData(reviewCountsByDay);
-    setColumnDescription( SENTIMENT_NAME[currentType]+ " column chart "+ String(month) +"/"+ String(year));
+    setColumnDescription( getSentimentName[currentType]+ " column chart "+ String(month) +"/"+ String(year));
   };
 
   if (error) return <p>{error}</p>;
@@ -206,7 +206,7 @@ const MericCardList = () => {
             backgroundColor="#ffaaa5"
           />
           <MetricCard
-            title="Unknown"
+            title="Unidentified"
             value={sentimentUnknown.length}
             onClick={() => didSelectCard(REVIEW_TYPE.UNKNOWN)}
             // percentageChange="-23.6% ↓"
