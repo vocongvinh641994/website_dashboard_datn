@@ -21,17 +21,18 @@ export const REVIEW_CATEGORY = {
 };
 
 export function getSentimentName(sentiment){
+  console.log("Aaaaaa: "+ sentiment);
   sentiment = parseInt(sentiment)
   var result = "unidentified"
   switch(sentiment){
     case REVIEW_TYPE.POSITIVE:
-      result = "positive" 
+      result = "Positive" 
       break
     case REVIEW_TYPE.NEUTRAL:
-      result = "neutral"
+      result = "Neutral"
       break
     case REVIEW_TYPE.NEGATIVE:
-      result = "negative"
+      result = "Negative"
       break
     default:
       result = ""

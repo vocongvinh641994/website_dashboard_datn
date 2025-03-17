@@ -18,7 +18,7 @@ const ReviewPage = () => {
   const limit = 5; // Number of items per page
 
   // Fetch reviews function
-  const fetchReviews = async (isSync = false) => {
+const fetchReviews = async (isSync = false) => {
     setLoading(isSync);
     try {
       console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
@@ -65,13 +65,36 @@ const syncSentimentReviews = async (isOpenAI,limit) => {
   }
 };
 
+const handleReload = () => {
+  fetchReviews(true);
+}
+
   useEffect(() => {
     fetchReviews();
   }, [currentPage, limit]);
 
   // Reload function keeps the current page
-  const handleReload = () => {
-    fetchReviews(true);
+  const removeTagged = async (reviewId) => {
+    const isConfirmed = window.confirm("Bạn có muốn xoá gán nhãn cho phản hồi này không?");
+    if (isConfirmed) {
+      setLoading(true);
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BACK_END_HOST}/api/delete_sentiment/`+reviewId, // full URL
+        {"reviewId":reviewId,
+        }, // request body, you can add any data you want to send in the body here
+        {
+          params: {}, // if there are query parameters, add them here
+        }
+      );
+      fetchReviews(true);
+      setLoading(false);
+      console.log("User clicked Yes");
+      // Proceed with the removal
+    } else {
+      
+      console.log("User clicked No");
+      // Cancel the operation
+    }
   };
 
   const handleNextPage = () => {
@@ -213,6 +236,7 @@ const isNewReview = (createdAt) => {
             <TH> Application sentiment</TH>
             <TH>Driver sentiment</TH>
             <TH>Attendant sentiment</TH>
+            <TH>Xoá gán nhãn</TH>
            
           </tr>
         </thead>
@@ -234,6 +258,9 @@ const isNewReview = (createdAt) => {
             <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.application_sentiment) : "Unknown"}</TD>
             <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.driver_sentiment): "Unknown"}</TD>
             <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.operator_sentiment): "Unknown"}</TD>
+            <TD>
+            <ButtonRemove onClick={() => removeTagged(review.id)}>Xoá gán nhãn</ButtonRemove>
+            </TD>
             </TR>
           ))}_
         </tbody>
@@ -341,6 +368,21 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 `;
+
+const ButtonRemove = styled.button`
+  padding: 10px 20px;
+  background-color: #ea9999;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+
 
 const PageNumbers = styled.div`
   display: flex;

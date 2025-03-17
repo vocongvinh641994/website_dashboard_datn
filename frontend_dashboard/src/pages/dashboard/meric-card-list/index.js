@@ -36,12 +36,14 @@ const MericCardList = () => {
       if (!sentiment) {
         tempUnknown.push(review);
       } else {
-        const sentimentType = sentiment.sentiment;
-        if (sentimentType === REVIEW_TYPE.POSITIVE) {
+        const application_sentiment = sentiment.application_sentiment;
+        const driver_sentiment = sentiment.driver_sentiment;
+        const operator_sentiment = sentiment.operator_sentiment;
+        if (application_sentiment === REVIEW_TYPE.POSITIVE || driver_sentiment === REVIEW_TYPE.POSITIVE || operator_sentiment === REVIEW_TYPE.POSITIVE ) {
           tempPositive.push(review);
-        } else if (sentimentType === REVIEW_TYPE.NEUTRAL) {
+        } else if (application_sentiment === REVIEW_TYPE.NEUTRAL || driver_sentiment === REVIEW_TYPE.NEUTRAL || operator_sentiment === REVIEW_TYPE.NEUTRAL ) {
           tempNeutral.push(review);
-        } else if (sentimentType === REVIEW_TYPE.NEGATIVE) {
+        } else if (application_sentiment === REVIEW_TYPE.NEGATIVE || driver_sentiment === REVIEW_TYPE.NEGATIVE || operator_sentiment === REVIEW_TYPE.NEGATIVE ) {
           tempNegative.push(review);
         }
       }
@@ -96,7 +98,7 @@ const MericCardList = () => {
     // Output the result
     console.log(reviewCountsByDay);
     setColumnData(reviewCountsByDay);
-    setColumnDescription( getSentimentName[currentType]+ " column chart "+ String(month) +"/"+ String(year));
+    setColumnDescription( getSentimentName(currentType)+ " column chart "+ String(month) +"/"+ String(year));
   };
 
   if (error) return <p>{error}</p>;
