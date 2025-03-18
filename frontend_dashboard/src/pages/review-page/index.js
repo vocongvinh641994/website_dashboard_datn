@@ -65,6 +65,31 @@ const syncSentimentReviews = async (isOpenAI,limit) => {
   }
 };
 
+
+  // Fetch reviews function
+  const syncSentimentReviewsById = async (isOpenAI,reviewId) => {
+    setLoading(true);
+    try {
+      console.log('Fetching reviews from: ', process.env.REACT_APP_BACK_END_HOST);
+  
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_END_HOST}/api/reviews/sync/`+reviewId, // full URL
+        {"reviewId":reviewId,
+          'isOpenAI': isOpenAI
+        }, // request body, you can add any data you want to send in the body here
+        {
+          params: {}, // if there are query parameters, add them here
+        }
+      );
+  
+      fetchReviews(false);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+      setLoading(false);
+    }
+  };
+
 const handleReload = () => {
   fetchReviews(true);
 }
@@ -236,7 +261,7 @@ const isNewReview = (createdAt) => {
             <TH> Application sentiment</TH>
             <TH>Driver sentiment</TH>
             <TH>Attendant sentiment</TH>
-            <TH>Xoá gán nhãn</TH>
+            <TH>Chức năng</TH>
            
           </tr>
         </thead>
@@ -258,6 +283,10 @@ const isNewReview = (createdAt) => {
             <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.application_sentiment) : "Unknown"}</TD>
             <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.driver_sentiment): "Unknown"}</TD>
             <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.operator_sentiment): "Unknown"}</TD>
+            <TD>
+            <ButtonAdd onClick={() => syncSentimentReviewsById(isOpenAI,review.id)}>Gán nhãn</ButtonAdd>
+            </TD>
+
             <TD>
             <ButtonRemove onClick={() => removeTagged(review.id)}>Xoá gán nhãn</ButtonRemove>
             </TD>
@@ -382,6 +411,18 @@ const ButtonRemove = styled.button`
   }
 `;
 
+const ButtonAdd = styled.button`
+  padding: 10px 20px;
+  background-color: #93c47d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
 
 
 const PageNumbers = styled.div`
