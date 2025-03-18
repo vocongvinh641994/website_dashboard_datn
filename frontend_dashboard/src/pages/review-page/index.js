@@ -57,7 +57,7 @@ const syncSentimentReviews = async (isOpenAI,limit) => {
       }
     );
 
-    fetchReviews(true);
+    fetchReviews(false);
     setLoading(false);
   } catch (err) {
     console.error('Error fetching reviews:', err);
@@ -86,7 +86,7 @@ const handleReload = () => {
           params: {}, // if there are query parameters, add them here
         }
       );
-      fetchReviews(true);
+      fetchReviews(false);
       setLoading(false);
       console.log("User clicked Yes");
       // Proceed with the removal
@@ -219,7 +219,7 @@ const isNewReview = (createdAt) => {
           <span>OpenAI</span>
       </CheckBoxContainer>
 
-      <Button onClick={()=>syncSentimentReviews(isOpenAI,5)}>Sync</Button>
+      <Button onClick={()=>syncSentimentReviews(isOpenAI,1)}>Sync</Button>
      
       </ButtonGroup>
 
