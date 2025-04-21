@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
-import { getSentimentName, getCategoryName } from '../../utils/review-utils';
+import { getSentimentName, getCategoryName, isSameSentiment } from '../../utils/review-utils';
 
 const ReviewPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -279,10 +279,10 @@ const isNewReview = (createdAt) => {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour12: false 
 }).replace(',', '')}</TD>
-            <TD>{review.sentimentAssociated ? (getCategoryName(review.sentimentAssociated.reviewsCategory)) : 'Unknown'}</TD>
-            <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.application_sentiment) : "Unknown"}</TD>
-            <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.driver_sentiment): "Unknown"}</TD>
-            <TD>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.operator_sentiment): "Unknown"}</TD>
+            <TD >{review.sentimentAssociated ? (getCategoryName(review.sentimentAssociated.reviewsCategory)) : 'Unknown'}</TD>
+            <TDCategory sameCategory={isSameSentiment((review.sentimentAssociated ? review.sentimentAssociated.application_sentiment : null), review.rating)}>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.application_sentiment) : "Unknown"}</TDCategory>
+            <TDCategory sameCategory={isSameSentiment((review.sentimentAssociated ? review.sentimentAssociated.driver_sentiment : null), review.rating)}>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.driver_sentiment): "Unknown"}</TDCategory>
+            <TDCategory sameCategory={isSameSentiment((review.sentimentAssociated ? review.sentimentAssociated.operator_sentiment : null), review.rating)}>{review.sentimentAssociated ? getSentimentName(review.sentimentAssociated.operator_sentiment): "Unknown"}</TDCategory>
             <TD>
             <ButtonAdd onClick={() => syncSentimentReviewsById(isOpenAI,review.id)}>Gán nhãn</ButtonAdd>
             </TD>
@@ -367,6 +367,32 @@ const TD = styled.td`
   padding: 12px 15px;
   font-size: 14px;
   color: #333;
+`;
+
+const TDCategory = styled.td`
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #333;
+  background-color: ${({ sameCategory }) => {
+    if(sameCategory){
+      return  'transparent';
+    }else{
+      return  '#ead1dc';
+    }
+    return  '#ead1dc';
+    switch (category) {
+      case 0: return '#ead1dc'; // Ứng dụng
+      // case 1: return '#d9ead3'; // Tài xế
+      // case 2: return '#fce5cd'; // Nhân viên hỗ trợ
+      // case 3: return '#ead1dc'; // Ứng dụng và tài xế
+      // case 4: return '#fff2cc'; // Ứng dụng và nhân viên hỗ trợ
+      // case 5: return '#d0e0e3'; // Tài xế và nhân viên hỗ trợ
+      // case 6: return '#f4cccc'; // Thuộc 3 nhóm
+      // case 7: return '#cccccc'; // Không phân nhóm được
+      // case 100: return '#eeeeee'; // Chưa phân nhóm
+      default: return 'transparent';
+    }
+  }};
 `;
 
 const Pagination = styled.div`

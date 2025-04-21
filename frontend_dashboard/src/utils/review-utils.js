@@ -68,3 +68,17 @@ export function getCategoryName(category){
   return CATEGORY_MAP[category]
 }
 
+export function isSameSentiment(sentiment, rating){
+  if(sentiment == null || sentiment == -1) return true;
+  var score = 0;
+  if(rating >=4){
+    score = 2;
+  } else if(rating == 3){
+    score = 1;
+  }else{
+    score = 0;
+  }
+  return sentiment == score;
+
+}
+
