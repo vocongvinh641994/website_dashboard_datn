@@ -5,8 +5,8 @@ import TopNav from './topnav';
 import MericCardList from './meric-card-list';
 import { Outlet } from 'react-router-dom';
 const breadcrumbItems = [
-    { label: 'Home', to: '/' },
-    { label: 'Dashboard' },
+    { label: 'Thống kê', to: '/' },
+    { label: 'Thống kê' },
   ];
 const Dashboard = () => {
   return (

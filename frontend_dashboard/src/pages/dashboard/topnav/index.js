@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Breadcrumbs from '../breadcrumbs';
 const breadcrumbItems = [
-    { label: 'Home', to: '/' },
-    { label: 'Dashboard' },
+    { label: 'Thống kê', to: '/' },
+    { label: 'Đánh giá', to: '/reviews' },
   ];
 const TopNav = () => {
   return (

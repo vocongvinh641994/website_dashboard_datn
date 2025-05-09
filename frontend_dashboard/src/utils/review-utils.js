@@ -1,9 +1,9 @@
 export const REVIEW_TYPE = {
-    POSITIVE: 2,
-    NEGATIVE: 0,
-    NEUTRAL: 1,
-    UNKNOWN: -1,
-  };
+  POSITIVE: 2,
+  NEGATIVE: 0,
+  NEUTRAL: 1,
+  UNKNOWN: -1,
+};
 
 export const REVIEW_CATEGORY = {
   DRIVER: "driver",
@@ -20,13 +20,33 @@ export const REVIEW_CATEGORY = {
   UNKNOWN: "unidentified",
 };
 
-export function getSentimentName(sentiment){
-  console.log("Aaaaaa: "+ sentiment);
+export function getColorFromType(type) {
+  var color = "#63BC46";
+  switch (type) {
+    case REVIEW_TYPE.POSITIVE:
+      color = "#63BC46";
+      break
+    case REVIEW_TYPE.NEUTRAL:
+      color = "#f0de89";
+      break;
+    case REVIEW_TYPE.NEGATIVE:
+      color = "#ffaaa5";
+      break;
+    default:
+      color = "#D2C0B0";
+      break;
+  }
+  console.log("test color: "+ color);
+  return color;
+}
+
+export function getSentimentName(sentiment) {
+  console.log("Aaaaaa: " + sentiment);
   sentiment = parseInt(sentiment)
   var result = "unidentified"
-  switch(sentiment){
+  switch (sentiment) {
     case REVIEW_TYPE.POSITIVE:
-      result = "Positive" 
+      result = "Positive"
       break
     case REVIEW_TYPE.NEUTRAL:
       result = "Neutral"
@@ -63,19 +83,19 @@ const CATEGORY_MAP = {
 };
 
 
-export function getCategoryName(category){
-  category = category+ ""
+export function getCategoryName(category) {
+  category = category + ""
   return CATEGORY_MAP[category]
 }
 
-export function isSameSentiment(sentiment, rating){
-  if(sentiment == null || sentiment == -1) return true;
+export function isSameSentiment(sentiment, rating) {
+  if (sentiment == null || sentiment == -1) return true;
   var score = 0;
-  if(rating >=4){
+  if (rating >= 4) {
     score = 2;
-  } else if(rating == 3){
+  } else if (rating == 3) {
     score = 1;
-  }else{
+  } else {
     score = 0;
   }
   return sentiment == score;

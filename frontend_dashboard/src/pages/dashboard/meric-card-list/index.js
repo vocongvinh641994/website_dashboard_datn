@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import MetricCard from '../meric-card';
 import axios from 'axios';
-import { REVIEW_TYPE , getSentimentName} from '../../../utils/review-utils';
+import { REVIEW_TYPE, getColorFromType, getSentimentName } from '../../../utils/review-utils';
 
 const MericCardList = () => {
   const [error, setError] = useState(null);
@@ -15,6 +15,7 @@ const MericCardList = () => {
   const [columnData, setColumnData] = useState([]);
   const [currentType, setCurrentType] = useState(REVIEW_TYPE.POSITIVE);
   const [columnDescription, setColumnDescription] = useState("");
+  const [groupSelected, setGroupSelected] = useState("");
 
   useEffect(() => {
     const currentDate = new Date();
@@ -39,11 +40,11 @@ const MericCardList = () => {
         const application_sentiment = sentiment.application_sentiment;
         const driver_sentiment = sentiment.driver_sentiment;
         const operator_sentiment = sentiment.operator_sentiment;
-        if (application_sentiment === REVIEW_TYPE.POSITIVE || driver_sentiment === REVIEW_TYPE.POSITIVE || operator_sentiment === REVIEW_TYPE.POSITIVE ) {
+        if (application_sentiment === REVIEW_TYPE.POSITIVE || driver_sentiment === REVIEW_TYPE.POSITIVE || operator_sentiment === REVIEW_TYPE.POSITIVE) {
           tempPositive.push(review);
-        } else if (application_sentiment === REVIEW_TYPE.NEUTRAL || driver_sentiment === REVIEW_TYPE.NEUTRAL || operator_sentiment === REVIEW_TYPE.NEUTRAL ) {
+        } else if (application_sentiment === REVIEW_TYPE.NEUTRAL || driver_sentiment === REVIEW_TYPE.NEUTRAL || operator_sentiment === REVIEW_TYPE.NEUTRAL) {
           tempNeutral.push(review);
-        } else if (application_sentiment === REVIEW_TYPE.NEGATIVE || driver_sentiment === REVIEW_TYPE.NEGATIVE || operator_sentiment === REVIEW_TYPE.NEGATIVE ) {
+        } else if (application_sentiment === REVIEW_TYPE.NEGATIVE || driver_sentiment === REVIEW_TYPE.NEGATIVE || operator_sentiment === REVIEW_TYPE.NEGATIVE) {
           tempNegative.push(review);
         }
       }
@@ -98,15 +99,15 @@ const MericCardList = () => {
     // Output the result
     console.log(reviewCountsByDay);
     setColumnData(reviewCountsByDay);
-    setColumnDescription( getSentimentName(currentType)+ " column chart "+ String(month) +"/"+ String(year));
+
   };
 
   if (error) return <p>{error}</p>;
 
-  const DynamicColumns = ({ columns }) => {
+  const DynamicColumns = ({ columns, color }) => {
     // Find the maximum count in the columns for scaling purposes
     const maxCount = Math.max(...columns.map((column) => column.count));
-  
+    console.log("Colors by type: " + color);
     return (
       <ColumnsContainer>
         {columns.map((column, index) => (
@@ -114,6 +115,7 @@ const MericCardList = () => {
             <TopLabel>{column.count}</TopLabel> {/* Top label for count */}
             <Column
               height={maxCount ? (column.count / maxCount) * 120 : 0} // Scale height dynamically
+              backgroundColor={color}
             />
             <BottomLabel>{column.day}</BottomLabel> {/* Bottom label for day */}
           </ColumnWrapper>
@@ -136,6 +138,7 @@ const MericCardList = () => {
 
   const didSelectCard = (type) => {
     setCurrentType(type);
+    setColumnDescription(getSentimentName(type) + " column chart " + String(month) + "/" + String(year));
     switch (type) {
       case REVIEW_TYPE.POSITIVE:
         getDetailByType(sentimentPositive, year, month);
@@ -156,11 +159,30 @@ const MericCardList = () => {
       default:
         console.log('Invalid type');
     }
+
   };
 
   return (
     <>
       <FilterContainer>
+        <div style={{ marginRight: 8 }}>Nhóm:</div>
+        <select style={{
+          marginRight: 8, height: 36, borderRadius: 4, borderColor: "#ebe8e1",
+          borderWidth: 1,
+          borderStyle: 'solid'
+        }} value={groupSelected} onChange={(e) => setGroupSelected(e.target.value)}>
+          <option value="">Tất cả</option>
+          <option value="0">Ứng dụng</option>
+          <option value="1">Tài xế</option>
+          <option value="2">Nhân viên hỗ trợ</option>
+          <option value="3">Ứng dụng và tài xế</option>
+          <option value="4">ứng dụng và nhân viên hỗ trợ</option>
+          <option value="5">Tài xế và nhân viên hỗ trợ</option>
+          <option value="6">Thuộc 3 nhóm</option>
+          <option value="7">Không phân nhóm được</option>
+          <option value="100">Chưa phân nhóm</option>
+        </select>
+
         <div style={{ marginRight: 8 }}>Month:</div>
         <InputField
           type="number"
@@ -218,9 +240,9 @@ const MericCardList = () => {
           />
         </MetricsRow>
 
-        <DynamicColumns columns={columnData} />
+        <DynamicColumns columns={columnData} color={getColorFromType(currentType)} />
         <CenteredText>{columnDescription}</CenteredText>
-  
+
       </DashboardContainer>
     </>
   );
@@ -253,6 +275,7 @@ const InputField = styled.input`
   margin-right: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  border-color: #ebe8e1;
   font-size: 14px;
   width: 100px;
 `;
@@ -278,7 +301,7 @@ const ColumnsContainer = styled.div`
 `;
 
 const Column = styled.div`
-  background-color: #2986cc;
+  background-color: ${({ backgroundColor }) => backgroundColor};
   color: black;
   flex: 1;
   width: 8px;

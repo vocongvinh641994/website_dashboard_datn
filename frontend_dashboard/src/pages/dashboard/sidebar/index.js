@@ -13,20 +13,20 @@ const Sidebar = () => {
       <NavSection>
              <NavItem onClick={() => navigate('/')}>
           <NavLink>
-            <Icon>🏠︎</Icon> Home
+            <Icon>🏠︎</Icon> Thống kê
           </NavLink>
         </NavItem>
         <NavItem onClick={() => navigate('/reviews')}>
           <NavLink>
-            <Icon>✏️</Icon> Review
+            <Icon>✏️</Icon> Đánh giá
           </NavLink>
         </NavItem>
-        <SectionTitle>EXTRAS</SectionTitle>
-        <NavItem onClick={() => navigate('/login')}>
+        {/* <SectionTitle>EXTRAS</SectionTitle> */}
+        {/* <NavItem onClick={() => navigate('/login')}>
           <NavLink>
             <Icon>📄</Icon> Logout
           </NavLink>
-        </NavItem>
+        </NavItem> */}
       </NavSection>
     </SidebarContainer>
   );

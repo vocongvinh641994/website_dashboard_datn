@@ -224,7 +224,11 @@ const isNewReview = (createdAt) => {
         />
 
       <TH>Nhóm</TH>
-      <select value={groupSelected} onChange={(e) => setGroupSelected(e.target.value)}>
+      <select style={{
+          marginRight: 8, borderRadius: 4, borderColor: "#ebe8e1",
+          borderWidth: 1,
+          borderStyle: 'solid'
+        }} value={groupSelected} onChange={(e) => setGroupSelected(e.target.value)}>
         <option value="">Tất cả</option>
         <option value="0">Ứng dụng</option>
         <option value="1">Tài xế</option>
